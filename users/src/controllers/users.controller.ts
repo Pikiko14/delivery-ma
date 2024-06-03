@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Response, Request } from "express";
 import { matchedData } from 'express-validator';
 import { User } from "../interfaces/users.interface";
 import { UsersService } from "../services/users.service";
@@ -37,8 +37,23 @@ export class UsersController {
   listUsers = async (req: RequestExt, res: Response): Promise<void | User | null>  => {
     try {
       const { user } = req;
-      const { page, perPage, search } = req.query as any; // get pagination data
-      return await this.service.listUsers(res, user._id, page, perPage, search);
+      const { page, perPage, search, fields } = req.query as any; // get pagination data
+      return await this.service.listUsers(res, user.parent || user._id, page, perPage, search);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message);
+    }
+  }
+
+  /**
+   * Show users
+   * @param { RequestExt } req Express request with extend data
+   * @param res Express response
+   * @returns Promise<void>
+   */
+  showUsers = async (req: Request, res: Response): Promise<void | User | null>  => {
+    try {
+      const { id } = req.params;
+      return await this.service.showUsers(res, id);
     } catch (error: any) {
       ResponseHandler.handleInternalError(res, error, error.message);
     }

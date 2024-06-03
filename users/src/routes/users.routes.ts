@@ -32,5 +32,15 @@ router.get(
     controller.listUsers
 );
 
+/**
+ * Do show user
+ */
+router.get(
+    '/:id',
+    sessionCheck,
+    perMissionMiddleware(ScopesOptions.LIST),
+    controller.showUsers
+);
+
 // export router
 export { router };

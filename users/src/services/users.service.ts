@@ -113,6 +113,32 @@ class UsersService extends UsersRepository {
       throw error.message;
     }
   }
+
+  /**
+   * Show user
+   * @param { Response } resp The response object
+   * @param { string } userId
+   */
+  public async showUsers(
+    res: Response,
+    userId: string,
+  ): Promise<User | void | null> {
+    try {
+      // get user
+      const user: User | void | null = await this.getUserById(userId);
+
+      // return data
+      return ResponseHandler.createdResponse(
+        res,
+        {
+          user,
+        },
+        "Users data"
+      );
+    } catch (error: any) {
+      throw error.message;
+    }
+  }
 }
 
 export { UsersService };

@@ -45,6 +45,14 @@ class UsersRepository {
   }
 
   /**
+   * Get User by id
+   * @param id String
+   */
+  public async getUserById(id: string): Promise<User | void | null> {
+    return await this.model.findById(id);
+  }
+
+  /**
    * delete user
    */
   public async deleteUser(id: string): Promise<User | void | null> {
@@ -75,8 +83,14 @@ class UsersRepository {
    * @param perPage
    * @param search
    */
-  public async paginate (query: any, skip: number, perPage: number): Promise<PaginationInterface> {
+  public async paginate (
+    query: any,
+    skip: number,
+    perPage: number,
+    fileds = '_id name last_name email role'
+  ): Promise<PaginationInterface> {
     const users = await this.model.find(query)
+    .select(fileds)
     .skip(skip)
     .limit(perPage);
     const totalUsers = await this.model.find(query).countDocuments();
