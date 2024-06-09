@@ -1,10 +1,16 @@
 FROM node:20
 
-# Create and set the working directory
-RUN mkdir -p /home/delivery-ma/gateway
+# Set the working directory
+WORKDIR /home/delivery-ma/gateway
 
-# Copy all files to the working directory
-COPY . /home/delivery-ma/gateway
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
+
+# Install dependencies
+RUN npm cache clean --force && npm install
+
+# Copy the rest of the application files
+COPY . .
 
 # Expose the port the app runs on
 EXPOSE 3080
