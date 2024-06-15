@@ -1,9 +1,19 @@
-FROM node:18
+FROM node:20
 
-RUN mkdir -p /home/app
+# Set the working directory
+WORKDIR /home/delivery-ma/auth
 
-COPY . /home/app
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
 
+# Install dependencies
+RUN npm cache clean --force && npm install
+
+# Copy the rest of the application files
+COPY . .
+
+# Expose the port the app runs on
 EXPOSE 3000
 
-CMD ["node", "/home/app/index.js"]
+# Command to run the application
+CMD ["npm", "run", "dev"]
