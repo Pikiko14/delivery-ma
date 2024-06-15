@@ -24,7 +24,7 @@ class MessageBroker {
 
     setTimeout(async () => {
       try {
-        const connection: Connection = await amqp.connect(configuration.get('RABITMQ_URL') || "amqp://localhost");
+        const connection: Connection = await amqp.connect(configuration.get('RABBITMQ_URL') || "amqp://localhost");
         this.channel = await connection.createChannel();
 
         // Configurar parámetros de la cola
