@@ -56,6 +56,8 @@ services:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       NODE_VERSION: 20.14.0
       YARN_VERSION: 1.22.22
+    volumes:
+      - ./auth:/home/delivery-ma/auth
     working_dir: /home/delivery-ma/auth
     ports:
       - "3000:3000"
@@ -72,6 +74,8 @@ services:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       NODE_VERSION: 20.14.0
       YARN_VERSION: 1.22.22
+    volumes:
+      - ./gateway:/home/delivery-ma/gateway
     working_dir: /home/delivery-ma/gateway
     ports:
       - "3080:3080"
@@ -88,6 +92,8 @@ services:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       NODE_VERSION: 20.14.0
       YARN_VERSION: 1.22.22
+    volumes:
+      - ./notifications:/home/delivery-ma/notifications
     working_dir: /home/delivery-ma/notifications
     networks:
       - delivery-ma
@@ -102,12 +108,14 @@ services:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       NODE_VERSION: 20.14.0
       YARN_VERSION: 1.22.22
+    volumes:
+      - ./users:/home/delivery-ma/users
     working_dir: /home/delivery-ma/users
     ports:
       - "3001:3001"
     networks:
       - delivery-ma
-    restart: "no"
+    restart: "always"
 
 networks:
   delivery-ma:
