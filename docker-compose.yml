@@ -1,0 +1,114 @@
+version: "3.9"
+services:
+  mongoDb:
+    image: mongo:7.0.11
+    container_name: mongoDb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: admin2024
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      GOSU_VERSION: 1.17
+      JSYAML_VERSION: 3.13.1
+      MONGO_PACKAGE: mongodb-org
+      MONGO_REPO: repo.mongodb.org
+      MONGO_MAJOR: 7.0
+      MONGO_VERSION: 7.0.11
+      HOME: /data/db
+    volumes:
+      - /data/configdb:/data/configdb
+      - /data/db:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - delivery-ma
+    restart: "always"
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      PATH: /opt/rabbitmq/sbin:/opt/erlang/bin:/opt/openssl/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      ERLANG_INSTALL_PATH_PREFIX: /opt/erlang
+      OPENSSL_INSTALL_PATH_PREFIX: /opt/openssl
+      RABBITMQ_DATA_DIR: /var/lib/rabbitmq
+      RABBITMQ_VERSION: 3.13.3
+      RABBITMQ_PGP_KEY_ID: 0x0A9AF2115F4687BD29803A206B73A36E6026DFCA
+      RABBITMQ_HOME: /opt/rabbitmq
+      HOME: /var/lib/rabbitmq
+      LANG: C.UTF-8
+      LANGUAGE: C.UTF-8
+      LC_ALL: C.UTF-8
+    volumes:
+      - /var/lib/rabbitmq:/var/lib/rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - delivery-ma
+    restart: "always"
+
+  delivery-ma-auth:
+    image: delivery-ma-auth
+    container_name: delivery-ma-auth
+    env_file:
+      - ./auth/.env
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      NODE_VERSION: 20.14.0
+      YARN_VERSION: 1.22.22
+    working_dir: /home/delivery-ma/auth
+    ports:
+      - "3000:3000"
+    networks:
+      - delivery-ma
+    restart: "always"
+
+  delivery-ma-gateway:
+    image: delivery-ma-gateway
+    container_name: delivery-ma-gateway
+    env_file:
+      - ./gateway/.env
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      NODE_VERSION: 20.14.0
+      YARN_VERSION: 1.22.22
+    working_dir: /home/delivery-ma/gateway
+    ports:
+      - "3080:3080"
+    networks:
+      - delivery-ma
+    restart: "always"
+
+  delivery-ma-notifications:
+    image: delivery-ma-notifications
+    container_name: delivery-ma-notifications
+    env_file:
+      - ./notifications/.env
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      NODE_VERSION: 20.14.0
+      YARN_VERSION: 1.22.22
+    working_dir: /home/delivery-ma/notifications
+    networks:
+      - delivery-ma
+    restart: "always"
+
+  delivery-ma-users:
+    image: delivery-ma-users
+    container_name: delivery-ma-users
+    env_file:
+      - ./users/.env
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      NODE_VERSION: 20.14.0
+      YARN_VERSION: 1.22.22
+    working_dir: /home/delivery-ma/users
+    ports:
+      - "3001:3001"
+    networks:
+      - delivery-ma
+    restart: "no"
+
+networks:
+  delivery-ma:
+    external: true
